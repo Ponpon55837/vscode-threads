@@ -16,8 +16,8 @@ No credential, authorization code, or token value is recorded in this report.
 | Static callback forwarding | Implemented and verified | Callback uses an allowlist and scrubs query history; JS-to-`vscode://` hop exercised end to end with a dummy code |
 | Pending-state survives window handoff | Fixed 2026-09-03 | First live attempt failed with "No OAuth request is pending" because the callback reached a different window's extension host; pending authorization moved from a module variable to `context.globalState` |
 | HTTPS deployed callback to VS Code | Pending deploy/configuration | No public HTTPS callback URL has been selected |
-| Secret absent from source/VSIX | Verification pending | Credentials use SecretStorage |
-| OAuth Broker/backend | Not created | Static files only |
+| Secret absent from source/VSIX | Verified 2026-09-03 | Packaged VSIX contains only `src/`, `callback/`, `package.json`, README, CHANGELOG; no credential strings (only SecretStorage key names); App Secret / token are written to SecretStorage at runtime |
+| OAuth Broker/backend | Not created (by design for Phase 1) | Static files only; confidential-client exchange happens in the extension host |
 
 ## Required Meta settings
 
