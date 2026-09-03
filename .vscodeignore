@@ -1,4 +1,6 @@
 .gitignore
+.gitattributes
+.vscode/**
 node_modules/**
 test/**
 scripts/**

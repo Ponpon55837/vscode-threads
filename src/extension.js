@@ -277,11 +277,11 @@ async function testStaticCallback(context, output) {
 async function keywordSearch(context, output) {
   const accessToken = await context.secrets.get(SECRET_ACCESS_TOKEN);
   if (!accessToken) {
-    vscode.window.showWarningMessage('Sign in to Threads before testing search.');
+    vscode.window.showWarningMessage('Sign in to Threads first.');
     return;
   }
   const query = await vscode.window.showInputBox({
-    title: 'Threads Keyword Search Spike',
+    title: 'Search Threads by Keyword',
     prompt: 'Keyword to search',
     ignoreFocusOut: true,
   });
@@ -306,14 +306,31 @@ async function keywordSearch(context, output) {
       )}`
     );
   }
-  const count = Array.isArray(payload.data) ? payload.data.length : 0;
+  const results = Array.isArray(payload.data) ? payload.data : [];
   output.info(
-    `keyword_search succeeded: ${count} result(s). Query text not logged.`
+    `keyword_search succeeded: ${results.length} result(s). Query text not logged.`
   );
-  output.show(true);
-  vscode.window.showInformationMessage(
-    `Threads keyword_search succeeded with ${count} result(s).`
+  if (results.length === 0) {
+    vscode.window.showInformationMessage('Threads keyword_search returned no results.');
+    return;
+  }
+
+  const picked = await vscode.window.showQuickPick(
+    results.map((item) => ({
+      label: item.username ? `@${item.username}` : '(unknown author)',
+      description: item.timestamp || '',
+      detail: (item.text || '').replace(/\s+/g, ' ').trim().slice(0, 200) || '(no text)',
+      permalink: item.permalink,
+    })),
+    {
+      title: `Threads keyword_search — ${results.length} result(s)`,
+      placeHolder: 'Select a post to open its permalink in the browser',
+      matchOnDetail: true,
+    }
   );
+  if (picked?.permalink) {
+    await vscode.env.openExternal(vscode.Uri.parse(picked.permalink));
+  }
 }
 
 async function disconnect(context) {

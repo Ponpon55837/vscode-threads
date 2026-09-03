@@ -4,19 +4,30 @@ Minimal VS Code extension proof of concept for a personal Threads API client:
 
 - Meta OAuth in the system browser.
 - HTTPS static callback forwards only OAuth result fields to `vscode://dgh.vscode-threads-plugin/auth`.
-- The extension validates a five-minute, in-memory `state` before exchanging the code.
+- The extension validates a five-minute `state` (kept in `globalState`, so a
+  callback delivered to another window still resolves) before exchanging the code.
 - Threads App ID, App Secret, and access token are stored in VS Code `SecretStorage`.
 - No OAuth broker, backend, database, telemetry, cookies, or scraping.
-- `keyword_search` supports `RECENT` and `TOP`.
+- `keyword_search` supports `RECENT` and `TOP`; results open in a Quick Pick and
+  selecting one opens its permalink.
 
 ## Commands
 
-1. `Threads Explorer: Setup Personal Mode`
-2. `Threads Explorer: Sign in with Threads`
-3. `Threads Explorer: Test Keyword Search`
-4. `Threads Explorer: Test Static Callback`
-5. `Threads Explorer: Disconnect Account`
-6. `Threads Explorer: Reset Personal Mode`
+All under the `Threads Explorer:` category in the Command Palette.
+
+1. `Setup Personal Mode` — store App ID, App Secret, and the HTTPS callback URL
+2. `Sign in with Threads` — start OAuth in the system browser
+3. `Search Threads by Keyword` — run `keyword_search` and browse results
+4. `Test Static Callback` — exercise the browser-to-`vscode://` hop with a dummy code
+5. `Disconnect Account` — delete the stored access token
+6. `Reset Personal Mode` — delete all stored configuration
+
+## Develop
+
+- `npm test` — pure-logic unit tests (`src/core.js`, `callback/callback.js`).
+- Press `F5` (Run Extension) to launch an Extension Development Host.
+- `npm run package` — build `dist/threads-explorer-poc.vsix`.
+- `code --install-extension dist/threads-explorer-poc.vsix --force` — sideload it.
 
 ## Static callback deployment
 

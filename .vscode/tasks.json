@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "npm test",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "serve:callback",
+      "type": "shell",
+      "command": "npm run serve:callback",
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

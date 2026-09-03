@@ -70,3 +70,50 @@ test('errors redact OAuth secrets and bearer tokens', () => {
   assert.equal(value.includes('xyz'), false);
   assert.equal(value.includes('token-value'), false);
 });
+
+test('assertHttpsRedirectUri rejects malformed URLs and embedded credentials', () => {
+  assert.throws(() => assertHttpsRedirectUri('not a url'), /valid URL/);
+  assert.throws(
+    () => assertHttpsRedirectUri('https://user:pass@example.test/cb'),
+    /must not contain credentials or a fragment/
+  );
+  assert.throws(
+    () => assertHttpsRedirectUri('https://example.test/cb#frag'),
+    /must not contain credentials or a fragment/
+  );
+});
+
+test('buildAuthorizationUrl requires appId and state and asks for a code', () => {
+  assert.throws(
+    () => buildAuthorizationUrl({ redirectUri: 'https://example.test/cb', state: 's' }),
+    /App ID and state are required/
+  );
+  assert.throws(
+    () => buildAuthorizationUrl({ appId: '1', redirectUri: 'https://example.test/cb' }),
+    /App ID and state are required/
+  );
+  const url = buildAuthorizationUrl({
+    appId: '1',
+    redirectUri: 'https://example.test/cb',
+    state: 's',
+  });
+  assert.equal(url.searchParams.get('response_type'), 'code');
+});
+
+test('buildKeywordSearchUrl validates input and defaults to RECENT', () => {
+  assert.throws(() => buildKeywordSearchUrl({ query: '   ' }), /query is required/);
+  assert.throws(
+    () => buildKeywordSearchUrl({ query: 'x', searchType: 'NEWEST' }),
+    /RECENT or TOP/
+  );
+  const url = buildKeywordSearchUrl({ query: 'x' });
+  assert.equal(url.searchParams.get('search_type'), 'RECENT');
+  assert.equal(
+    url.searchParams.get('fields'),
+    'id,username,text,timestamp,permalink,media_type'
+  );
+});
+
+test('callback parser passes the spike marker through', () => {
+  assert.equal(parseCallbackQuery('code=A&state=B&spike=callback-only').spike, 'callback-only');
+});
