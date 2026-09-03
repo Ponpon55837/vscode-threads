@@ -1,0 +1,41 @@
+{
+  "name": "vscode-threads-plugin",
+  "displayName": "Threads Explorer Phase 1 Spike",
+  "description": "Personal-mode Threads OAuth, URI callback, and keyword search feasibility spike.",
+  "version": "0.0.1",
+  "publisher": "dgh",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onUri",
+    "onCommand:threadsExplorer.setupPersonalMode",
+    "onCommand:threadsExplorer.signIn",
+    "onCommand:threadsExplorer.keywordSearch",
+    "onCommand:threadsExplorer.disconnect",
+    "onCommand:threadsExplorer.resetPersonalMode",
+    "onCommand:threadsExplorer.testStaticCallback"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "threadsExplorer.setupPersonalMode", "title": "Threads Explorer: Setup Personal Mode" },
+      { "command": "threadsExplorer.signIn", "title": "Threads Explorer: Sign in with Threads" },
+      { "command": "threadsExplorer.keywordSearch", "title": "Threads Explorer: Test Keyword Search" },
+      { "command": "threadsExplorer.testStaticCallback", "title": "Threads Explorer: Test Static Callback" },
+      { "command": "threadsExplorer.disconnect", "title": "Threads Explorer: Disconnect Account" },
+      { "command": "threadsExplorer.resetPersonalMode", "title": "Threads Explorer: Reset Personal Mode" }
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "serve:callback": "node scripts/serve-callback.js",
+    "package": "vsce package --out dist/threads-explorer-poc.vsix"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.0"
+  }
+}

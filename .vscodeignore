@@ -1,0 +1,10 @@
+.gitignore
+node_modules/**
+test/**
+scripts/**
+dist/**
+*.vsix
+*.env
+.env*
+callback-evidence.json
+SPIKE_REPORT.md
